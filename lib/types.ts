@@ -31,3 +31,24 @@ export type Material = {
   safety_stock: number;
   is_active: boolean;
 };
+
+// One row of v_movement_history (ledger with readable names)
+export type MovementHistoryRow = {
+  id: number;
+  movement_date: string;
+  movement_type: "RECEIPT" | "ISSUE" | "ADJUSTMENT";
+  quantity: number;
+  material_id: number;
+  material_code: string;
+  material_description: string;
+  uom_code: string;
+  equipment_code: string | null;
+  equipment_name: string | null;
+  area_name: string | null;
+  supplier_name: string | null;
+  reason_code: string | null;
+  reason_description: string | null;
+  reference: string | null;
+  notes: string | null;
+  created_by_name: string;
+};
