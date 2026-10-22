@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { LayoutDashboard } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { ComingSoon } from "@/components/coming-soon";
@@ -27,6 +28,8 @@ export default function DashboardPage() {
 
 // Reads v_dashboard_kpis. Data only appears for signed-in users (RLS).
 async function KpiCards() {
+  // Live data: always read at request time, never prerendered
+  await connection();
   const supabase = await createClient();
   const { data, error } = await supabase.from("v_dashboard_kpis").select("*").single();
 

@@ -1,4 +1,5 @@
 import { LogOut } from "lucide-react";
+import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,8 @@ const ROLE_LABELS: Record<string, string> = {
 // Signed-in user's name, role and sign-out button.
 // Reads the session, so it must render inside a <Suspense> boundary.
 export async function UserMenu({ variant = "sidebar" }: { variant?: "sidebar" | "header" }) {
+  // Render only at request time: the session check uses the current time
+  await connection();
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
