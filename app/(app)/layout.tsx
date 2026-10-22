@@ -1,7 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { MobileNav, SidebarNav } from "@/components/app-nav";
+import { MobileNav, MobileNavView, SidebarNav, SidebarNavView } from "@/components/app-nav";
 import { UserMenu, UserMenuSkeleton } from "@/components/user-menu";
 
 // Shell for every signed-in page: sidebar on desktop, top bar on mobile.
@@ -13,7 +13,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <Link href="/dashboard" className="px-6 pt-6 pb-2 text-sidebar-accent-foreground">
           <Logo inverted />
         </Link>
-        <SidebarNav />
+        <Suspense fallback={<SidebarNavView pathname="" />}>
+          <SidebarNav />
+        </Suspense>
         <div className="border-t border-sidebar-border p-4">
           <Suspense fallback={<UserMenuSkeleton />}>
             <UserMenu />
@@ -31,7 +33,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               <UserMenu variant="header" />
             </Suspense>
           </div>
-          <MobileNav />
+          <Suspense fallback={<MobileNavView pathname="" />}>
+            <MobileNav />
+          </Suspense>
         </header>
 
         <main className="mx-auto w-full max-w-7xl flex-1 space-y-6 p-4 sm:p-6 lg:p-8">

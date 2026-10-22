@@ -5,10 +5,17 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_SECTIONS } from "./nav-items";
 
-// Sidebar navigation (desktop). Highlights the current section.
-export function SidebarNav() {
-  const pathname = usePathname();
+const isActive = (pathname: string, href: string) =>
+  pathname === href || pathname.startsWith(`${href}/`);
 
+// Sidebar navigation (desktop). Highlights the current section.
+// The current URL is only known at request time, so the layout renders
+// this inside <Suspense> with SidebarNavView (no highlight) as fallback.
+export function SidebarNav() {
+  return <SidebarNavView pathname={usePathname()} />;
+}
+
+export function SidebarNavView({ pathname }: { pathname: string }) {
   return (
     <nav className="flex-1 space-y-6 px-3 py-4">
       {NAV_SECTIONS.map((section, i) => (
@@ -19,7 +26,7 @@ export function SidebarNav() {
             </p>
           )}
           {section.items.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(`${href}/`);
+            const active = isActive(pathname, href);
             return (
               <Link
                 key={href}
@@ -45,13 +52,16 @@ export function SidebarNav() {
 
 // Compact horizontal navigation for small screens
 export function MobileNav() {
-  const pathname = usePathname();
+  return <MobileNavView pathname={usePathname()} />;
+}
+
+export function MobileNavView({ pathname }: { pathname: string }) {
   const items = NAV_SECTIONS.flatMap((s) => s.items);
 
   return (
     <nav className="flex gap-1 overflow-x-auto px-4 pb-3 md:hidden">
       {items.map(({ href, label }) => {
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+        const active = isActive(pathname, href);
         return (
           <Link
             key={href}
