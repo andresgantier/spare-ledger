@@ -23,3 +23,10 @@ export const formatSignedQty = (value: number | string | null | undefined) => {
 
 export const formatDateTime = (value: string | null | undefined) =>
   value ? dateTime.format(new Date(value)) : "";
+
+// Days the current stock lasts at the average daily consumption
+export const daysOfCover = (stock: number, avgDaily: number) =>
+  avgDaily > 0 ? Math.floor(Number(stock) / Number(avgDaily)) : null;
+
+export const formatDaysAgo = (days: number | null | undefined) =>
+  days == null ? "Never" : days === 0 ? "Today" : days === 1 ? "1 day ago" : `${days} days ago`;

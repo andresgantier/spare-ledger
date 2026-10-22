@@ -52,3 +52,30 @@ export type MovementHistoryRow = {
   notes: string | null;
   created_by_name: string;
 };
+
+// One row of v_material_status (stock, reorder point and traffic light)
+export type MaterialStatusRow = {
+  material_id: number;
+  code: string;
+  description: string;
+  category_id: number;
+  category_name: string;
+  uom_code: string;
+  location_id: number;
+  location_code: string;
+  supplier_id: number;
+  supplier_name: string;
+  lead_time_days: number;
+  unit_cost: number;
+  safety_stock: number;
+  is_active: boolean;
+  stock_qty: number;
+  last_movement_at: string | null;
+  issued_qty_90d: number;
+  avg_daily_consumption: number;
+  reorder_point: number;
+  stock_value: number;
+  stock_status: "RED" | "YELLOW" | "GREEN";
+  days_since_last_movement: number | null;
+  is_slow_moving: boolean;
+};

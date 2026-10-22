@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { MovementTypeBadge } from "@/components/movement-type-badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDateTime, formatSignedQty } from "@/lib/format";
+import { formatDateTime, formatQty, formatSignedQty } from "@/lib/format";
 import type { MovementHistoryRow } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -10,10 +10,13 @@ export function MovementsTable({
   rows,
   showMaterial = true,
   highlightId,
+  balances,
 }: {
   rows: MovementHistoryRow[];
   showMaterial?: boolean;
   highlightId?: number;
+  /** Stock after each movement (running total of the ledger), by movement id */
+  balances?: Map<number, number>;
 }) {
   return (
     <Table>
@@ -23,6 +26,7 @@ export function MovementsTable({
           <TableHead>Type</TableHead>
           {showMaterial && <TableHead>Material</TableHead>}
           <TableHead className="text-right">Quantity</TableHead>
+          {balances && <TableHead className="text-right">Balance</TableHead>}
           <TableHead>Destination / source / reason</TableHead>
           <TableHead>Reference</TableHead>
           <TableHead>Recorded by</TableHead>
@@ -35,7 +39,7 @@ export function MovementsTable({
             <TableCell><MovementTypeBadge type={m.movement_type} /></TableCell>
             {showMaterial && (
               <TableCell className="max-w-72 truncate" title={m.material_description}>
-                <Link href={`/materials/${m.material_id}`} className="font-mono text-xs font-medium text-primary hover:underline">
+                <Link href={`/stock/${m.material_id}`} className="font-mono text-xs font-medium text-primary hover:underline">
                   {m.material_code}
                 </Link>{" "}
                 <span className="text-muted-foreground">{m.material_description}</span>
@@ -44,6 +48,11 @@ export function MovementsTable({
             <TableCell className={cn("text-right font-medium tabular-nums", Number(m.quantity) < 0 ? "text-foreground" : "text-[oklch(0.42_0.11_150)]")}>
               {formatSignedQty(m.quantity)} <span className="text-xs font-normal text-muted-foreground">{m.uom_code}</span>
             </TableCell>
+            {balances && (
+              <TableCell className="text-right tabular-nums text-muted-foreground">
+                {formatQty(balances.get(m.id) ?? 0)}
+              </TableCell>
+            )}
             <TableCell className="max-w-64 truncate">
               {m.movement_type === "ISSUE" && (
                 <span title={`${m.equipment_name} (${m.area_name})`}>
